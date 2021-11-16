@@ -5,6 +5,8 @@ const mongoose = require('mongoose') //Подключаем mongoose
 
 const app = express()
 
+app.use(express.json({ extended: true}))//Middlware для Json 
+
 app.use('/api/auth', require('./routes/auth.routes'))
 
 const PORT = config.get('port') || 5000
