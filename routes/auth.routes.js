@@ -8,11 +8,22 @@ const { check, validationResult } = require('express-validator')
 const User = require('../models/User')
 const router = Router()
 
-// /api/auth/register
+// /api/auth/get
 
-router.get('/get', (req, res) => { //Проверка работы сервера
-  res.send('Hello World!');
+router.get('/get', async (req, res) => { //Проверка работы сервера
+  try {
+    const {userId} = req.query
+
+    const user = await User.find({userId})
+
+    res.json(user)
+  } catch (error) {
+    console.log(error)
+    
+  }
 })
+
+// /api/auth/register
 
 router.post(
   '/register',
@@ -91,10 +102,10 @@ router.post(
       const token = jwt.sign(
         { userId: user.id },
         config.get('jwtSecret'),
-        { expiresIn: '1h' }
+        { expiresIn: '1h' },
       )
 
-      res.json({ token, userId: user.id })
+      res.json({ token, userId: user.id, loginAuth })
 
     } catch (e) {
       res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })

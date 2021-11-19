@@ -7,7 +7,9 @@ const app = express()
 
 app.use(express.json({ extended: true}))//Middlware для Json 
 
-app.use('/api/auth', require('./routes/auth.routes'))
+app.use('/api/auth', require('./routes/auth.routes')) //работа с пользователем
+
+app.use('/api/message', require('./routes/message.routes')) //работа с сообщениями
 
 const PORT = config.get('port') || 5000
 
