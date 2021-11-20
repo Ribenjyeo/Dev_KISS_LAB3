@@ -12,14 +12,14 @@ const router = Router()
 
 router.get('/get', async (req, res) => { //Проверка работы сервера
   try {
-    const {userId} = req.query
+    const { userId } = req.query
 
-    const user = await User.find({userId})
+    const user = await User.find({ userId })
 
     res.json(user)
   } catch (error) {
     console.log(error)
-    
+
   }
 })
 
@@ -70,12 +70,11 @@ router.post(
 router.post(
   '/login',
   [
-    check('loginAuth', 'Введите корректный login').exists(),
-    check('passwordAuth', 'Введите пароль').exists()
+    check('loginAuth', 'Введите корректный login').trim().notEmpty(),
+    check('passwordAuth', 'Введите пароль').trim().notEmpty()
   ],
   async (req, res) => {
     try {
-      // console.log('body', req.body)
       const errors = validationResult(req)
 
       if (!errors.isEmpty()) {
@@ -87,16 +86,9 @@ router.post(
 
       const { loginAuth, passwordAuth } = req.body
 
-      const user = await User.findOne({ loginAuth })
-
-      if (!user) {
-        return res.status(400).json({ message: 'Пользователь не найден' })
-      }
-
-      const isMatch = await User.findOne({ passwordAuth })
-
-      if (!isMatch) {
-        return res.status(400).json({ message: 'Неверный пароль, попробуйте снова' })
+      const user = await User.collection.find({ "login": loginAuth, "password": passwordAuth }).count()
+      if (user == 0) {
+        return res.status(400).json({ message: 'Не верный логин или пароль' })
       }
 
       const token = jwt.sign(
@@ -111,5 +103,17 @@ router.post(
       res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
     }
   })
+
+  router.delete(
+    '/delete/:id',
+    async (req, res) => {
+        try {
+            const user = await User.findOneAndDelete({_id: req.params.id})
+            res.json(user)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+)
 
 module.exports = router
