@@ -1,7 +1,7 @@
 # Dev_KISS_LAB3
-**Starting APPS
+**Starting APPS**
 In terminal write 'npm run dev'
-**Start frontend
+**Start frontend**
 In terminal write 'npm start'
-**Start backend
+**Start backend**
 In terminal write 'npm run server'
